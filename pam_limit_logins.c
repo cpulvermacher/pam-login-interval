@@ -14,7 +14,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, cons
 {
     time_t now;
     time_t last_login;
-    long diff;
+    long seconds_since_last_login;
 
     /* Get the username */
     char *username = NULL;
@@ -27,20 +27,22 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, cons
     last_login = last_login_time(username);
     if (last_login == 0)
     {
+        printf("no last login found\n");
         // not logged in before, so don't limit login
         return PAM_SUCCESS;
     }
 
-    /* Calculate the difference in seconds */
-    diff = difftime(now, last_login);
+    seconds_since_last_login = difftime(now, last_login);
 
-    /* Check if the difference is less than 4 hours */
-    if (diff < 4 * 60 * 60)
+    /* Check if the difference is less than X */
+    if (seconds_since_last_login < 24 * 60 * 60 * 20)
     {
+        printf("too soon\n");
         return PAM_AUTH_ERR;
     }
     else
     {
+        printf("normal success\n");
         return PAM_SUCCESS;
     }
 }
