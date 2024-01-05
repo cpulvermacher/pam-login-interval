@@ -1,14 +1,8 @@
 #include <time.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/types.h>
-#include <pwd.h>
-#include <lastlog.h>
-#include <utmpx.h>
 #include <security/pam_modules.h>
 
-time_t last_login_time(const char *target_user);
+#include "utils.h"
 
 PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
 {
@@ -71,26 +65,4 @@ PAM_EXTERN int pam_sm_close_session(pam_handle_t *pamh, int flags, int argc, con
 PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags, int argc, const char **argv)
 {
     return PAM_SUCCESS;
-}
-
-time_t last_login_time(const char *target_user)
-{
-    struct utmpx *ut;
-    char user[__UT_NAMESIZE + 1];
-    time_t last_login = 0;
-
-    setutxent(); // rewind to the beginning of the wtmp file
-    while ((ut = getutxent()) != NULL)
-    {
-        strncpy(user, ut->ut_user, __UT_NAMESIZE);
-        user[__UT_NAMESIZE] = '\0'; // Ensure null-termination
-        if (ut->ut_type == USER_PROCESS && strcmp(user, target_user) == 0)
-        {
-            last_login = ut->ut_tv.tv_sec;
-            break;
-        }
-    }
-    endutxent(); // close the wtmp file
-
-    return last_login;
 }

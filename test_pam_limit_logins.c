@@ -1,7 +1,6 @@
+#include <pwd.h>
 #include <stdio.h>
-#include <stdarg.h>
 #include <unistd.h>
-#include <stddef.h>
 #include <security/pam_appl.h>
 
 #include "pam_limit_logins.c"

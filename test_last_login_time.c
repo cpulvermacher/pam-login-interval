@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <unistd.h>
-#include <sys/types.h>
+#include <pwd.h>
 
-#include "pam_limit_logins.c"
+#include "utils.h"
 
 int main(void)
 {
