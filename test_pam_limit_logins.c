@@ -9,7 +9,7 @@
 int main(void)
 {
     struct passwd *pw;
-    pam_handle_t *pamh;
+    pam_handle_t *pamh = NULL;
     int flags = 0;
     int argc = 0;
     const char **argv = NULL;
@@ -23,7 +23,7 @@ int main(void)
     }
 
     pam_start("test", pw->pw_name, NULL, &pamh);
-    authenticate_result = pam_sm_authenticate(&pamh, flags, argc, argv);
+    authenticate_result = pam_sm_authenticate(pamh, flags, argc, argv);
 
     if (authenticate_result == PAM_SUCCESS)
     {

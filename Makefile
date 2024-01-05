@@ -21,4 +21,4 @@ test_last_login_time: test_last_login_time.c pam_limit_logins.c
 	$(CC) $(CFLAGS) -o $@ $@.c $(shell pkg-config --libs pam)
 
 test_pam_limit_logins: test_pam_limit_logins.c pam_limit_logins.c
-	$(CC) $(CFLAGS) -o $@ $@.c $(shell pkg-config --libs pam)
+	$(CC) $(CFLAGS) -Wno-nonnull -o $@ $@.c $(shell pkg-config --libs pam)

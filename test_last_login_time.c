@@ -4,7 +4,7 @@
 
 #include "pam_limit_logins.c"
 
-int main()
+int main(void)
 {
     struct passwd *pw;
     time_t last_login;

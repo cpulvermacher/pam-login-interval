@@ -8,11 +8,11 @@
 #include <utmpx.h>
 #include <security/pam_modules.h>
 
-time_t last_login_time(char *target_user);
+time_t last_login_time(const char *target_user);
 
 PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
 {
-    char *username = NULL;
+    const char *username = NULL;
     time_t now;
     time_t last_login;
     long seconds_since_last_login;
@@ -72,7 +72,7 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags, int argc, const c
     return PAM_SUCCESS;
 }
 
-time_t last_login_time(char *target_user)
+time_t last_login_time(const char *target_user)
 {
     struct utmpx *ut;
     char user[__UT_NAMESIZE + 1];
