@@ -12,9 +12,9 @@ sudo make install
 
 Add the following to your PAM config, ideally a new file in /etc/pam.d/:
 ```
-   auth required pam_limit_logins.so user=your.user.name min_interval_s=3600
+   auth required pam_limit_logins.so user=your.user.name min_interval=3600
 ```
-change the `user` and `min_interval_s` arguments as required.
+change the `user` and `min_interval` arguments as required.
 
 
 ### Prerequisites

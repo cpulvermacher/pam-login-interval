@@ -1,21 +1,34 @@
 #include <time.h>
 #include <stdio.h>
+#include <string.h>
 #include <security/pam_modules.h>
 
 #include "utils.h"
 
 PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
 {
+    char *target_user = NULL;
+    long min_seconds_between_logins;
     const char *username = NULL;
     time_t now;
     time_t last_login;
-    long min_seconds_between_logins = 60 * 60 * 24; // TODO make configurable
     long seconds_since_last_login;
+
+    if (parse_args(argc, argv, &target_user, &min_seconds_between_logins) != 0)
+    {
+        return PAM_AUTH_ERR;
+    }
 
     /* Get the username */
     if (pam_get_user(pamh, &username, NULL) != PAM_SUCCESS)
     {
         return PAM_USER_UNKNOWN;
+    }
+
+    if (target_user != NULL && strcmp(username, target_user) != 0)
+    {
+        printf("not target user\n");
+        return PAM_SUCCESS;
     }
 
     now = time(NULL);

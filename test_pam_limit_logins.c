@@ -20,8 +20,8 @@ int main(void)
     pam_handle_t *pamh = NULL;
     int status;
     int flags = 0;
-    int argc = 0;
-    const char **argv = NULL;
+    int argc = 2;
+    const char *argv[] = {"target_user=test", "min_interval=100000"};
 
     pw = getpwuid(getuid()); // Get the current user
     if (pw == NULL)

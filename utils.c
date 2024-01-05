@@ -1,5 +1,6 @@
 #include <string.h>
 #include <utmpx.h>
+#include <stdlib.h>
 
 #include "utils.h"
 
@@ -23,4 +24,24 @@ time_t last_login_time(const char *target_user)
     endutxent(); // close the wtmp file
 
     return last_login;
+}
+
+// Accepts the following arguments:
+// target_user=<username>
+// min_interval=<seconds>
+int parse_args(int argc, const char **argv, char **target_user, long *min_seconds_between_logins)
+{
+    for (int i = 0; i < argc; i++)
+    {
+        if (strncmp(argv[i], "target_user=", 12) == 0)
+        {
+            *target_user = strdup(argv[i] + 12);
+        }
+        else if (strncmp(argv[i], "min_interval=", 13) == 0)
+        {
+            *min_seconds_between_logins = strtol(argv[i] + 13, NULL, 10);
+        }
+    }
+
+    return 0;
 }
