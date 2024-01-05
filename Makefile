@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -Wall -Wextra $(shell pkg-config --cflags pam)
+CFLAGS = -Wall  $(shell pkg-config --cflags pam)
 
 all: pam_limit_logins.so
 
@@ -12,9 +12,13 @@ clean:
 install: pam_limit_logins.so
 	cp pam_check_lastlogin.so /lib/security/
 
-test: test_last_login_time
+test: test_last_login_time test_pam_limit_logins
 	./test_last_login_time
+	./test_pam_limit_logins
 	@echo "All tests OK."
 
 test_last_login_time: test_last_login_time.c pam_limit_logins.c
-	$(CC) $(CFLAGS) -shared -o $@ $@.c $(shell pkg-config --libs pam)
+	$(CC) $(CFLAGS) -o $@ $@.c $(shell pkg-config --libs pam)
+
+test_pam_limit_logins: test_pam_limit_logins.c pam_limit_logins.c
+	$(CC) $(CFLAGS) -o $@ $@.c $(shell pkg-config --libs pam)
