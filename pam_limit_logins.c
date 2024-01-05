@@ -12,12 +12,12 @@ time_t last_login_time(char *target_user);
 
 PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
 {
+    char *username = NULL;
     time_t now;
     time_t last_login;
     long seconds_since_last_login;
 
     /* Get the username */
-    char *username = NULL;
     if (pam_get_user(pamh, &username, NULL) != PAM_SUCCESS)
     {
         return PAM_USER_UNKNOWN;
@@ -75,13 +75,12 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags, int argc, const c
 time_t last_login_time(char *target_user)
 {
     struct utmpx *ut;
-
+    char user[__UT_NAMESIZE + 1];
     time_t last_login = 0;
 
     setutxent(); // rewind to the beginning of the wtmp file
     while ((ut = getutxent()) != NULL)
     {
-        char user[__UT_NAMESIZE + 1];
         strncpy(user, ut->ut_user, __UT_NAMESIZE);
         user[__UT_NAMESIZE] = '\0'; // Ensure null-termination
         if (ut->ut_type == USER_PROCESS && strcmp(user, target_user) == 0)
