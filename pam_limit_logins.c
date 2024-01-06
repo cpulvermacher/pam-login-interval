@@ -1,5 +1,7 @@
 #include <time.h>
 #include <string.h>
+
+#define PAM_SM_AUTH
 #include <security/pam_modules.h>
 
 #include "utils.h"
@@ -78,28 +80,8 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, cons
     }
 }
 
-// TODO check if I need these
+// needs to be defined to be a proper PAM authentication module
 PAM_EXTERN int pam_sm_setcred(pam_handle_t *pamh, int flags, int argc, const char **argv)
 {
-    return PAM_SUCCESS;
-}
-
-PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh, int flags, int argc, const char **argv)
-{
-    return PAM_SUCCESS;
-}
-
-PAM_EXTERN int pam_sm_open_session(pam_handle_t *pamh, int flags, int argc, const char **argv)
-{
-    return PAM_SUCCESS;
-}
-
-PAM_EXTERN int pam_sm_close_session(pam_handle_t *pamh, int flags, int argc, const char **argv)
-{
-    return PAM_SUCCESS;
-}
-
-PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags, int argc, const char **argv)
-{
-    return PAM_SUCCESS;
+    return PAM_IGNORE;
 }
