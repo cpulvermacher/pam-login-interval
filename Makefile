@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=c11 -Wall -Wextra $(shell pkg-config --cflags pam)
+CFLAGS = -std=c11 -O2 -Wall -Wextra -Wpedantic $(shell pkg-config --cflags pam)
 OBJS = utils.o
 LIBS = $(shell pkg-config --libs pam) $(OBJS)
 INSTALLDIR = /lib/security/
