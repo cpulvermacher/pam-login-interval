@@ -1,4 +1,4 @@
 *.so
 *.o
-test_last_login_time
+test_utils
 test_pam_limit_logins

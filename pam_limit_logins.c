@@ -1,5 +1,6 @@
 #include <time.h>
 #include <string.h>
+#include <stdint.h>
 
 #define PAM_SM_AUTH
 #include <security/pam_modules.h>
@@ -36,11 +37,11 @@ int pam_log(pam_handle_t *pamh, const char *message)
 PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
 {
     char *target_user = NULL;
-    long min_seconds_between_logins;
+    uint64_t min_seconds_between_logins;
     const char *username = NULL;
     time_t now;
     time_t last_login;
-    long seconds_since_last_login;
+    uint64_t seconds_since_last_login;
 
     if (parse_args(argc, argv, &target_user, &min_seconds_between_logins) != 0)
     {

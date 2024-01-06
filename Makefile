@@ -20,12 +20,12 @@ install: pam_limit_logins.so
 	mkdir -p $(INSTALLDIR)
 	cp pam_limit_logins.so $(INSTALLDIR)
 
-test: test_last_login_time test_pam_limit_logins
-	./test_last_login_time
+test: test_utils test_pam_limit_logins
+	./test_utils
 	./test_pam_limit_logins
 	@echo "All tests OK."
 
-test_last_login_time: test_last_login_time.c utils.o
+test_utils: test_utils.c utils.o
 	$(CC) $(CFLAGS) -o $@ $@.c $(LIBS)
 
 test_pam_limit_logins: test_pam_limit_logins.c pam_limit_logins.c utils.o

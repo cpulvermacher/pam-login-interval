@@ -35,10 +35,7 @@ time_t last_login_time(const char *target_user)
     return last_login;
 }
 
-// Accepts the following arguments:
-// target_user=<username>
-// min_interval=<seconds>
-int parse_args(int argc, const char **argv, char **target_user, long *min_seconds_between_logins)
+int parse_args(int argc, const char **argv, char **target_user, uint64_t *min_seconds_between_logins)
 {
     for (int i = 0; i < argc; i++)
     {
@@ -48,9 +45,56 @@ int parse_args(int argc, const char **argv, char **target_user, long *min_second
         }
         else if (strncmp(argv[i], "min_interval=", 13) == 0)
         {
-            *min_seconds_between_logins = strtol(argv[i] + 13, NULL, 10);
+            if (parse_duration(argv[i] + 13, min_seconds_between_logins) != 0)
+            {
+                return 1;
+            }
         }
     }
+
+    return 0;
+}
+
+int parse_duration(const char *duration, uint64_t *seconds)
+{
+    uint64_t number = 0;
+    *seconds = 0;
+
+    while (*duration != '\0')
+    {
+        if (*duration == 's')
+        {
+            *seconds += number;
+            number = 0;
+        }
+        else if (*duration == 'm')
+        {
+            *seconds += number * 60;
+            number = 0;
+        }
+        else if (*duration == 'h')
+        {
+            *seconds += number * 60 * 60;
+            number = 0;
+        }
+        else if (*duration == 'd')
+        {
+            *seconds += number * 60 * 60 * 24;
+            number = 0;
+        }
+        else if (*duration >= '0' && *duration <= '9')
+        {
+            number = number * 10 + (*duration - '0');
+        }
+        else
+        {
+            return 1;
+        }
+        duration++;
+    }
+
+    // any remaining `number` without unit is in seconds
+    *seconds += number;
 
     return 0;
 }
