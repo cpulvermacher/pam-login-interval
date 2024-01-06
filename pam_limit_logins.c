@@ -1,9 +1,35 @@
 #include <time.h>
-#include <stdio.h>
 #include <string.h>
 #include <security/pam_modules.h>
 
 #include "utils.h"
+
+int pam_log(pam_handle_t *pamh, const char *message)
+{
+    struct pam_message msg;
+    struct pam_response *resp;
+    const struct pam_message *msgp;
+    struct pam_conv *conv;
+    int retval;
+
+    msg.msg_style = PAM_TEXT_INFO;
+    msg.msg = message;
+    msgp = &msg;
+
+    retval = pam_get_item(pamh, PAM_CONV, (const void **)&conv);
+    if (retval != PAM_SUCCESS)
+    {
+        return 1;
+    }
+
+    retval = conv->conv(1, &msgp, &resp, conv->appdata_ptr);
+    if (retval != PAM_SUCCESS)
+    {
+        return 1;
+    }
+
+    return 0;
+}
 
 PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
 {
@@ -27,7 +53,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, cons
 
     if (target_user != NULL && strcmp(username, target_user) != 0)
     {
-        printf("not target user, allow login\n");
+        // not target user, allow login
         return PAM_SUCCESS;
     }
 
@@ -35,7 +61,6 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, cons
     last_login = last_login_time(username);
     if (last_login == 0)
     {
-        printf("no last login found\n");
         // not logged in before, so don't limit login
         return PAM_SUCCESS;
     }
@@ -44,12 +69,11 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, cons
 
     if (seconds_since_last_login < min_seconds_between_logins)
     {
-        printf("too soon\n");
+        pam_log(pamh, "Login denied (too soon after last login)\n");
         return PAM_AUTH_ERR;
     }
     else
     {
-        printf("normal success\n");
         return PAM_SUCCESS;
     }
 }
