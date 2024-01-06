@@ -8,6 +8,11 @@
 static int test_conv(int num_msg, const struct pam_message **msg,
                      struct pam_response **resp, void *appdata_ptr)
 {
+    (void)num_msg;
+    (void)msg;
+    (void)resp;
+    (void)appdata_ptr;
+
     // not actually called in test
     return PAM_CONV_ERR;
 }
