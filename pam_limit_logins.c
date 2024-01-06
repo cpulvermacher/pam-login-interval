@@ -71,7 +71,10 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, cons
 
     if (seconds_since_last_login < min_seconds_between_logins)
     {
-        pam_log(pamh, "Login denied (too soon after last login)\n");
+        if (!(flags & PAM_SILENT))
+        {
+            pam_log(pamh, "Login denied (too soon after last login)\n");
+        }
         return PAM_AUTH_ERR;
     }
     else
