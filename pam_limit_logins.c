@@ -27,7 +27,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, cons
 
     if (target_user != NULL && strcmp(username, target_user) != 0)
     {
-        printf("not target user\n");
+        printf("not target user, allow login\n");
         return PAM_SUCCESS;
     }
 
