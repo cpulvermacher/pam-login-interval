@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <pwd.h>
 
-#include "utils.h"
+#include "../utils.h"
 
 int test_last_login_time(void)
 {

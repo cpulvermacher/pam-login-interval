@@ -20,14 +20,14 @@ test: test_utils test_pam_login_interval
 	@echo "All tests OK."
 
 
-utils.o: utils.c utils.h
+utils.o: src/utils.c src/utils.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-pam_login_interval.so: pam_login_interval.c utils.o
-	$(CC) $(CFLAGS) -shared -o $@ pam_login_interval.c $(LIBS) $(OBJS)
+pam_login_interval.so: src/pam_login_interval.c utils.o
+	$(CC) $(CFLAGS) -shared -o $@ src/pam_login_interval.c $(LIBS) $(OBJS)
 
-test_utils: test_utils.c utils.o
-	$(CC) $(CFLAGS) -o $@ $@.c $(LIBS) $(OBJS)
+test_utils: src/test/test_utils.c utils.o
+	$(CC) $(CFLAGS) -o $@ src/test/test_utils.c $(LIBS) $(OBJS)
 
-test_pam_login_interval: test_pam_login_interval.c pam_login_interval.so
-	$(CC) $(CFLAGS) -o $@ $@.c $(LIBS) ./pam_login_interval.so
+test_pam_login_interval: src/test/test_pam_login_interval.c pam_login_interval.so
+	$(CC) $(CFLAGS) -o $@ src/test/test_pam_login_interval.c $(LIBS) ./pam_login_interval.so
