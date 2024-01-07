@@ -1,4 +1,4 @@
 *.so
-*.o
+build/
 test_utils
 test_pam_login_interval
