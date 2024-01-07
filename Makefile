@@ -14,7 +14,7 @@ pam_login_interval.so: pam_login_interval.c utils.o
 	$(CC) $(CFLAGS) -shared -o $@ pam_login_interval.c $(LIBS)
 
 clean:
-	rm -f pam_login_interval.so test_utils test_pam_login_interval(OBJS)
+	rm -f pam_login_interval.so test_utils test_pam_login_interval $(OBJS)
 
 install: pam_login_interval.so
 	mkdir -p $(INSTALLDIR)
