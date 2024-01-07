@@ -1,9 +1,9 @@
 #include <pwd.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <security/pam_appl.h>
 
-#include "pam_login_interval.c"
+#include <security/pam_appl.h>
+#include <security/pam_modules.h>
 
 static int test_conv(int num_msg, const struct pam_message **msg,
                      struct pam_response **resp, void *appdata_ptr)
