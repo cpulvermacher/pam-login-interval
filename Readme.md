@@ -1,4 +1,4 @@
-# pam-limit-logins
+# pam-login-interval
 
 A PAM module that enforces a minimum time between logins.
 
@@ -22,7 +22,7 @@ sudo make install
 
 Add the following to your PAM config, e.g. to /etc/pam.d/lightdm to use this module with LightDM logins:
 ```
-   account required pam_limit_logins.so target_user=your.user.name min_interval=30m
+   account required pam_login_interval.so target_user=your.user.name min_interval=30m
 ```
 change the `target_user` and `min_interval` arguments as required.
 

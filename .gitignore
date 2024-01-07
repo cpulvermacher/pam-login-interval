@@ -1,4 +1,4 @@
 *.so
 *.o
 test_utils
-test_pam_limit_logins
+test_pam_login_interval

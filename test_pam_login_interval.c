@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <security/pam_appl.h>
 
-#include "pam_limit_logins.c"
+#include "pam_login_interval.c"
 
 static int test_conv(int num_msg, const struct pam_message **msg,
                      struct pam_response **resp, void *appdata_ptr)
@@ -13,7 +13,6 @@ static int test_conv(int num_msg, const struct pam_message **msg,
     (void)resp;
     (void)appdata_ptr;
 
-    // not actually called in test
     return PAM_CONV_ERR;
 }
 
