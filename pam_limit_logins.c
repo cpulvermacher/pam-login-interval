@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdint.h>
 
-#define PAM_SM_AUTH
+#define PAM_SM_ACCOUNT
 #include <security/pam_modules.h>
 
 #include "utils.h"
@@ -34,7 +34,7 @@ int pam_log(pam_handle_t *pamh, const char *message)
     return 0;
 }
 
-PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
+PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh, int flags, int argc, const char **argv)
 {
     char *target_user = NULL;
     uint64_t min_seconds_between_logins;
@@ -82,15 +82,4 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, cons
     {
         return PAM_SUCCESS;
     }
-}
-
-// needs to be defined to be a proper PAM authentication module
-PAM_EXTERN int pam_sm_setcred(pam_handle_t *pamh, int flags, int argc, const char **argv)
-{
-    (void)pamh;
-    (void)flags;
-    (void)argc;
-    (void)argv;
-
-    return PAM_IGNORE;
 }

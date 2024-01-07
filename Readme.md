@@ -14,7 +14,7 @@ sudo apt install gcc make libpam0g-dev
 
 ## Getting Started
 
-Build and install the plugin via:
+Build and install the module via:
 ```
 make
 sudo make install
@@ -22,11 +22,9 @@ sudo make install
 
 Add the following to your PAM config, e.g. to /etc/pam.d/lightdm to use this module with LightDM logins:
 ```
-   auth required pam_limit_logins.so target_user=your.user.name min_interval=30m
+   account required pam_limit_logins.so target_user=your.user.name min_interval=30m
 ```
 change the `target_user` and `min_interval` arguments as required.
-
-Note that you likely want to add this after any other `auth` rules or `@include common-auth` statements to run this after e.g. password checks.
 
 ## Module Parameters
 
