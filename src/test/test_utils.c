@@ -62,5 +62,14 @@ int main(void)
     failed += test_parse_duration("0d0h0m0s", 0);
     failed += test_parse_duration("dhms", 0);
 
+    if (failed == 0)
+    {
+        printf("test_utils: All tests passed\n");
+    }
+    else
+    {
+        printf("test_utils: %d tests failed\n", failed);
+    }
+
     return failed;
 }
