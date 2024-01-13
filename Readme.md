@@ -2,8 +2,6 @@
 
 A PAM module that enforces a minimum time between logins.
 
-Status: *Experimental.* Needs more testing, may or may not work.
-
 ### Prerequisites
 
 gcc, make, and PAM development libraries are required.
