@@ -1,6 +1,7 @@
 CC = gcc
-CFLAGS = -std=c11 -O2 -Wall -Wextra -Wpedantic $(shell pkg-config --cflags pam)
-LIBS = $(shell pkg-config --libs pam)
+PAM_CFLAGS = $(shell pkg-config --cflags pam || echo "-I/usr/include/security")
+CFLAGS = -std=c11 -O2 -Wall -Wextra -Wpedantic ${PAM_CFLAGS}
+LIBS = $(shell pkg-config --libs pam || echo "-lpam")
 BUILDDIR = build
 INSTALLDIR = /lib/security/
 OBJS = $(BUILDDIR)/utils.o
