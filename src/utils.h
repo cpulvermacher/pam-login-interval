@@ -34,4 +34,7 @@ int parse_args(int argc, const char **argv, char **target_user, uint64_t *min_se
  */
 int parse_duration(const char *duration, uint64_t *seconds);
 
+/** prints `seconds` as "n days" / "n hours" / "n minutes" (depending on duration) into `buffer`, up to `size`. */
+int print_duration(char *buffer, size_t size, uint64_t seconds);
+
 #endif

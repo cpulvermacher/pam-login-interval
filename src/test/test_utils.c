@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <pwd.h>
 
@@ -45,6 +46,19 @@ int test_parse_duration(const char *duration, uint64_t expected_seconds)
     return 0;
 }
 
+int test_print_duration(uint64_t seconds, const char *expected_duration)
+{
+    char duration[100];
+    print_duration(duration, sizeof(duration), seconds);
+
+    if (strcmp(duration, expected_duration) != 0)
+    {
+        printf("Expected %lu seconds to be formatted as '%s', but got '%s'\n", seconds, expected_duration, duration);
+        return 1;
+    }
+    return 0;
+}
+
 int main(void)
 {
     int failed = 0;
@@ -61,6 +75,15 @@ int main(void)
     failed += test_parse_duration("1d2h3s", 60 * 60 * 24 + 60 * 60 * 2 + 3);
     failed += test_parse_duration("0d0h0m0s", 0);
     failed += test_parse_duration("dhms", 0);
+
+    failed += test_print_duration(0, "0 minutes");
+    failed += test_print_duration(59, "0 minutes");
+    failed += test_print_duration(60, "1 minutes");
+    failed += test_print_duration(61, "1 minutes");
+    failed += test_print_duration(60 * 59 + 1, "59 minutes");
+    failed += test_print_duration(60 * 60, "1 hours");
+    failed += test_print_duration(60 * 60 * 24, "1 days");
+    failed += test_print_duration(60 * 60 * 24 * 500 + 1000, "500 days");
 
     if (failed == 0)
     {

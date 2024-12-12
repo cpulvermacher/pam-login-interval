@@ -1,5 +1,6 @@
 #define _XOPEN_SOURCE 700
 
+#include <stdio.h>
 #include <string.h>
 #include <utmp.h>
 #include <utmpx.h>
@@ -97,4 +98,22 @@ int parse_duration(const char *duration, uint64_t *seconds)
     *seconds += number;
 
     return 0;
+}
+
+int print_duration(char *buffer, size_t size, uint64_t seconds)
+{
+    uint64_t days = seconds / (60 * 60 * 24);
+    if (days > 0)
+    {
+        return snprintf(buffer, size, "%lu days", days);
+    }
+
+    uint64_t hours = seconds / (60 * 60);
+    if (hours > 0)
+    {
+        return snprintf(buffer, size, "%lu hours", hours);
+    }
+
+    uint64_t minutes = seconds / 60;
+    return snprintf(buffer, size, "%lu minutes", minutes);
 }
