@@ -89,6 +89,25 @@ int test_print_duration_returns_length_ignoring_limit(void)
     return 0;
 }
 
+int test_print_login_denied_msg(uint64_t seconds_remaining, const char *expected_msg)
+{
+    char buffer[100];
+    int ret = print_login_denied_msg(buffer, sizeof(buffer), seconds_remaining);
+    if (ret != 0)
+    {
+        printf("Unexpected return value from print_login_denied_msg: %d\n", ret);
+        return 1;
+    }
+
+    if (strcmp(buffer, expected_msg) != 0)
+    {
+        printf("Expected message to be '%s', but got '%s'\n", expected_msg, buffer);
+        return 1;
+    }
+
+    return 0;
+}
+
 int main(void)
 {
     int failed = 0;
@@ -116,6 +135,10 @@ int main(void)
     failed += test_print_duration(60 * 60 * 24 * 500 + 1000, "500 days");
     failed += test_print_duration_returns_length_ignoring_limit();
     failed += test_print_duration_returns_length_ignoring_limit_null_buffer();
+
+    failed += test_print_login_denied_msg(0, "Login denied (need to wait 0 minutes before next login)\n");
+    failed += test_print_login_denied_msg(3602, "Login denied (need to wait 1 hours before next login)\n");
+    failed += test_print_login_denied_msg(60 * 60 * 24 * 7, "Login denied (need to wait 7 days before next login)\n");
 
     if (failed == 0)
     {

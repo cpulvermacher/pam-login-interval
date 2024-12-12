@@ -74,7 +74,9 @@ PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh, int flags, int argc, const c
     {
         if (!(flags & PAM_SILENT))
         {
-            pam_log(pamh, "Login denied (too soon after last login)\n");
+            char message[100];
+            print_login_denied_msg(message, sizeof(message), min_seconds_between_logins - seconds_since_last_login);
+            pam_log(pamh, message);
         }
         return PAM_AUTH_ERR;
     }

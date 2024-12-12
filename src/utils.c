@@ -117,3 +117,21 @@ int print_duration(char *buffer, size_t size, uint64_t seconds)
     uint64_t minutes = seconds / 60;
     return snprintf(buffer, size, "%lu minutes", minutes);
 }
+
+int print_login_denied_msg(char *buffer, size_t size, uint64_t seconds_remaining)
+{
+    char duration[40];
+    int duration_ret = print_duration(duration, sizeof(duration), seconds_remaining);
+    if (duration_ret > 0)
+    {
+        int ret = snprintf(buffer, size, "Login denied (need to wait %s before next login)\n", duration);
+        if (ret > 0)
+        {
+            return 0;
+        }
+    }
+
+    // Fallback to a generic message
+    snprintf(buffer, size, "Login denied (too soon after last login)\n");
+    return 1;
+}

@@ -37,4 +37,7 @@ int parse_duration(const char *duration, uint64_t *seconds);
 /** prints `seconds` as "n days" / "n hours" / "n minutes" (depending on duration) into `buffer`, up to `size`. */
 int print_duration(char *buffer, size_t size, uint64_t seconds);
 
+/** prints a login denied message into `buffer`, up to `size`, with the remaining `seconds_remaining` */
+int print_login_denied_msg(char *buffer, size_t size, uint64_t seconds_remaining);
+
 #endif
