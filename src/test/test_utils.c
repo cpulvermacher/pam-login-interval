@@ -48,14 +48,44 @@ int test_parse_duration(const char *duration, uint64_t expected_seconds)
 
 int test_print_duration(uint64_t seconds, const char *expected_duration)
 {
-    char duration[100];
-    print_duration(duration, sizeof(duration), seconds);
+    char duration[20];
+    int ret = print_duration(duration, sizeof(duration), seconds);
+    if (ret <= 0)
+    {
+        printf("Unexpected return value from print_duration: %d\n", ret);
+        return 1;
+    }
 
     if (strcmp(duration, expected_duration) != 0)
     {
         printf("Expected %lu seconds to be formatted as '%s', but got '%s'\n", seconds, expected_duration, duration);
         return 1;
     }
+    return 0;
+}
+
+int test_print_duration_returns_length_ignoring_limit_null_buffer(void)
+{
+    int ret = print_duration(NULL, 0, 123);
+    if (ret != 9) // "2 minutes" is 9 characters
+    {
+        printf("Unexpected return value from print_duration(NULL, 0, 123) %d\n", ret);
+        return 1;
+    }
+
+    return 0;
+}
+
+int test_print_duration_returns_length_ignoring_limit(void)
+{
+    char duration[20];
+    int ret = print_duration(duration, 0, 123);
+    if (ret != 9) // "2 minutes" is 9 characters
+    {
+        printf("Unexpected return value from print_duration(..., 0, 123) %d\n", ret);
+        return 1;
+    }
+
     return 0;
 }
 
@@ -84,6 +114,8 @@ int main(void)
     failed += test_print_duration(60 * 60, "1 hours");
     failed += test_print_duration(60 * 60 * 24, "1 days");
     failed += test_print_duration(60 * 60 * 24 * 500 + 1000, "500 days");
+    failed += test_print_duration_returns_length_ignoring_limit();
+    failed += test_print_duration_returns_length_ignoring_limit_null_buffer();
 
     if (failed == 0)
     {
