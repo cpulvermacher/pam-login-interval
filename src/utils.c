@@ -120,7 +120,7 @@ int print_duration(char *buffer, size_t size, uint64_t seconds)
 
 int print_login_denied_msg(char *buffer, size_t size, uint64_t seconds_remaining)
 {
-    char duration[40];
+    char duration[25];
     int duration_ret = print_duration(duration, sizeof(duration), seconds_remaining);
     if (duration_ret > 0)
     {
