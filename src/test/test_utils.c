@@ -142,6 +142,7 @@ int main(void)
     failed += test_parse_duration_expect_error("-1s");
     failed += test_parse_duration_expect_error("-55");
     failed += test_parse_duration_expect_error("abc");
+    failed += test_parse_duration_expect_error(u8"ユニコード");
     failed += test_parse_duration_expect_error(" ");
 
     failed += test_print_duration(0, "0 minutes");
