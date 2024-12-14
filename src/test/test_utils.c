@@ -46,6 +46,17 @@ int test_parse_duration(const char *duration, uint64_t expected_seconds)
     return 0;
 }
 
+int test_parse_duration_expect_error(const char *duration)
+{
+    uint64_t seconds;
+    if (parse_duration(duration, &seconds) == 0)
+    {
+        printf("Expected parse_duration to return an error for %s\n", duration);
+        return 1;
+    }
+    return 0;
+}
+
 int test_print_duration(uint64_t seconds, const char *expected_duration)
 {
     char duration[20];
@@ -123,7 +134,15 @@ int main(void)
     failed += test_parse_duration("1d", 60 * 60 * 24);
     failed += test_parse_duration("1d2h3s", 60 * 60 * 24 + 60 * 60 * 2 + 3);
     failed += test_parse_duration("0d0h0m0s", 0);
+    failed += test_parse_duration("213503982334601d", 18446744073709526400u);
+    failed += test_parse_duration("18446744073709551615", UINT64_MAX);
+    failed += test_parse_duration("18446744073709551615s", UINT64_MAX);
     failed += test_parse_duration("dhms", 0);
+    failed += test_parse_duration("", 0);
+    failed += test_parse_duration_expect_error("-1s");
+    failed += test_parse_duration_expect_error("-55");
+    failed += test_parse_duration_expect_error("abc");
+    failed += test_parse_duration_expect_error(" ");
 
     failed += test_print_duration(0, "0 minutes");
     failed += test_print_duration(59, "0 minutes");
