@@ -2,6 +2,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <pwd.h>
+#include <inttypes.h>
 
 #include "../utils.h"
 
@@ -40,7 +41,7 @@ int test_parse_duration(const char *duration, uint64_t expected_seconds)
 
     if (seconds != expected_seconds)
     {
-        printf("Expected %s to be parsed as %lu seconds, but got %lu seconds\n", duration, expected_seconds, seconds);
+        printf("Expected %s to be parsed as %" PRIu64 " seconds, but got %" PRIu64 " seconds\n", duration, expected_seconds, seconds);
         return 1;
     }
     return 0;
@@ -69,7 +70,7 @@ int test_print_duration(uint64_t seconds, const char *expected_duration)
 
     if (strcmp(duration, expected_duration) != 0)
     {
-        printf("Expected %lu seconds to be formatted as '%s', but got '%s'\n", seconds, expected_duration, duration);
+        printf("Expected %" PRIu64 " seconds to be formatted as '%s', but got '%s'\n", seconds, expected_duration, duration);
         return 1;
     }
     return 0;

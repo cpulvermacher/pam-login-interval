@@ -6,6 +6,7 @@
 #include <utmpx.h>
 #include <stdlib.h>
 #include <paths.h>
+#include <inttypes.h>
 
 #include "utils.h"
 
@@ -105,17 +106,17 @@ int print_duration(char *buffer, size_t size, uint64_t seconds)
     uint64_t days = seconds / (60 * 60 * 24);
     if (days > 0)
     {
-        return snprintf(buffer, size, "%lu days", days);
+        return snprintf(buffer, size, "%" PRIu64 " days", days);
     }
 
     uint64_t hours = seconds / (60 * 60);
     if (hours > 0)
     {
-        return snprintf(buffer, size, "%lu hours", hours);
+        return snprintf(buffer, size, "%" PRIu64 " hours", hours);
     }
 
     uint64_t minutes = seconds / 60;
-    return snprintf(buffer, size, "%lu minutes", minutes);
+    return snprintf(buffer, size, "%" PRIu64 " minutes", minutes);
 }
 
 int print_login_denied_msg(char *buffer, size_t size, uint64_t seconds_remaining)
