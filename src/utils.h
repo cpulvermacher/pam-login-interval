@@ -1,5 +1,4 @@
-#ifndef UTILS_H
-#define UTILS_H
+#pragma once
 
 #include <time.h>
 #include <stdint.h>
@@ -39,5 +38,3 @@ int print_duration(char *buffer, size_t size, uint64_t seconds);
 
 /** prints a login denied message into `buffer`, up to `size`, with the remaining `seconds_remaining` */
 int print_login_denied_msg(char *buffer, size_t size, uint64_t seconds_remaining);
-
-#endif
