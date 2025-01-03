@@ -18,7 +18,7 @@ time_t last_login_time(const char *target_user);
  *
  * @param argc The number of arguments
  * @param argv The array of arguments
- * @param target_user Pointer to store the target user.
+ * @param target_user Pointer to store the target user. Points to data inside `argv` and should not be free()'d.
  * @param min_seconds_between_logins Pointer to store the minimum seconds between logins.
  * @return Returns 0 on success, 1 on failure.
  */

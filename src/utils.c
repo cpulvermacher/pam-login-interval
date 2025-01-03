@@ -43,7 +43,7 @@ int parse_args(int argc, const char **argv, char **target_user, uint64_t *min_se
     {
         if (strncmp(argv[i], "target_user=", 12) == 0)
         {
-            *target_user = strdup(argv[i] + 12);
+            *target_user = argv[i] + 12;
         }
         else if (strncmp(argv[i], "min_interval=", 13) == 0)
         {
