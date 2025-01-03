@@ -30,6 +30,75 @@ int test_last_login_time(void)
     return 0;
 }
 
+int test_parse_args_target_user(const char *arg, const char *expected_user)
+{
+    const char *argv[] = {arg};
+    char *target_user = NULL;
+    uint64_t min_seconds_between_logins = 0;
+
+    if (parse_args(1, argv, &target_user, &min_seconds_between_logins) != 0)
+    {
+        printf("Failed to parse args %s\n", arg);
+        return 1;
+    }
+
+    if (strcmp(target_user, expected_user) != 0)
+    {
+        printf("Expected target_user to be %s, but got %s\n", expected_user, target_user);
+        return 1;
+    }
+
+    if (min_seconds_between_logins != 0)
+    {
+        printf("Expected min_seconds_between_logins to be unchanged, but got %" PRIu64 "\n", min_seconds_between_logins);
+        return 1;
+    }
+
+    return 0;
+}
+
+int test_parse_args_min_interval(const char *arg, uint64_t expected_seconds)
+{
+    const char *argv[] = {arg};
+    char *target_user = NULL;
+    uint64_t min_seconds_between_logins = 0;
+
+    if (parse_args(1, argv, &target_user, &min_seconds_between_logins) != 0)
+    {
+        printf("Failed to parse args %s\n", arg);
+        return 1;
+    }
+
+    if (target_user != NULL)
+    {
+        printf("Expected target_user to be unchanged, but got %s\n", target_user);
+        return 1;
+    }
+
+    if (min_seconds_between_logins != expected_seconds)
+    {
+        printf("Expected min_seconds_between_logins to be %" PRIu64 ", but got %" PRIu64 "\n", expected_seconds, min_seconds_between_logins);
+        return 1;
+    }
+
+    return 0;
+}
+
+int test_parse_args_expect_error(const char *arg)
+{
+    const char *argv[] = {arg};
+    char *target_user = NULL;
+    uint64_t min_seconds_between_logins = 0;
+
+    if (parse_args(1, argv, &target_user, &min_seconds_between_logins) == 0)
+    {
+        printf("Expected parse_args to return an error for %s\n", arg);
+        return 1;
+    }
+
+    return 0;
+}
+
 int test_parse_duration(const char *duration, uint64_t expected_seconds)
 {
     uint64_t seconds;
@@ -125,6 +194,13 @@ int main(void)
     int failed = 0;
 
     failed += test_last_login_time();
+
+    failed += test_parse_args_target_user("target_user=alice", "alice");
+    failed += test_parse_args_target_user("target_user=", "");
+    failed += test_parse_args_min_interval("min_interval=123", 123);
+    failed += test_parse_args_min_interval("min_interval=1d", 60 * 60 * 24);
+    failed += test_parse_args_min_interval("other_args_are_ignored", 0);
+    failed += test_parse_args_expect_error("min_interval=abc");
 
     failed += test_parse_duration("350", 350);
     failed += test_parse_duration("1s", 1);
