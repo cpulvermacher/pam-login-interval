@@ -35,4 +35,4 @@ $(BUILDDIR)/test_utils: src/test/test_utils.c $(BUILDDIR)/utils.o
 	$(CC) $(CFLAGS) -o $@ src/test/test_utils.c $(LIBS) $(OBJS)
 
 $(BUILDDIR)/test_pam_login_interval: src/test/test_pam_login_interval.c pam_login_interval.so | $(BUILDDIR)
-	$(CC) $(CFLAGS) -o $@ src/test/test_pam_login_interval.c $(LIBS) ./pam_login_interval.so
+	$(CC) $(CFLAGS) -o $@ src/test/test_pam_login_interval.c $(LIBS) $(OBJS) ./pam_login_interval.so

@@ -9,6 +9,8 @@
 #include <security/pam_appl.h>
 #include <security/pam_modules.h>
 
+#include "../utils.h"
+
 char *last_pam_message = NULL;
 static int test_conv(int num_msg, const struct pam_message **msg,
                      struct pam_response **resp, void *appdata_ptr)
@@ -78,11 +80,15 @@ int main(void)
         perror("getpwuid");
         return 1;
     }
+    time_t last_login = last_login_time(pw->pw_name);
 
     int failed = 0;
     // log in as current user (no target_user set)
     failed += test_pam_login_interval(1, (const char *[]){"min_interval=0"}, pw->pw_name, PAM_SUCCESS);
-    failed += test_pam_login_interval(1, (const char *[]){"min_interval=36500d"}, pw->pw_name, PAM_AUTH_ERR);
+    if (last_login != 0)
+    {
+        failed += test_pam_login_interval(1, (const char *[]){"min_interval=36500d"}, pw->pw_name, PAM_AUTH_ERR);
+    }
 
     // log in with user '-' (not a valid user, so should never have logged in before)
     failed += test_pam_login_interval(1, (const char *[]){"min_interval=36500d"}, "-", PAM_SUCCESS);
@@ -91,11 +97,19 @@ int main(void)
     char target_user_arg[100];
     snprintf(target_user_arg, sizeof(target_user_arg), "target_user=%s", pw->pw_name);
     failed += test_pam_login_interval(2, (const char *[]){"min_interval=0", target_user_arg}, pw->pw_name, PAM_SUCCESS);
-    failed += test_pam_login_interval(2, (const char *[]){"min_interval=36500d", target_user_arg}, pw->pw_name, PAM_AUTH_ERR);
+    if (last_login != 0)
+    {
+        failed += test_pam_login_interval(2, (const char *[]){"min_interval=36500d", target_user_arg}, pw->pw_name, PAM_AUTH_ERR);
+    }
 
     // log in as user A (target_user set to B)
     failed += test_pam_login_interval(2, (const char *[]){"min_interval=0", "target_user=B"}, "A", PAM_SUCCESS);
     failed += test_pam_login_interval(2, (const char *[]){"min_interval=36500d", "target_user=B"}, "A", PAM_SUCCESS);
+
+    if (last_login == 0)
+    {
+        printf("No previous login found for user %s, skipped failure test cases!\n", pw->pw_name);
+    }
 
     if (failed > 0)
     {
