@@ -22,7 +22,7 @@ time_t last_login_time(const char *target_user);
  * @param min_seconds_between_logins Pointer to store the minimum seconds between logins.
  * @return Returns 0 on success, 1 on failure.
  */
-int parse_args(int argc, const char **argv, char **target_user, uint64_t *min_seconds_between_logins);
+int parse_args(int argc, const char **argv, const char **target_user, uint64_t *min_seconds_between_logins);
 
 /**
  * Parses a duration string and stores the corresponding number of seconds in the provided variable.

@@ -33,7 +33,7 @@ int test_last_login_time(void)
 int test_parse_args_target_user(const char *arg, const char *expected_user)
 {
     const char *argv[] = {arg};
-    char *target_user = NULL;
+    const char *target_user = NULL;
     uint64_t min_seconds_between_logins = 0;
 
     if (parse_args(1, argv, &target_user, &min_seconds_between_logins) != 0)
@@ -60,7 +60,7 @@ int test_parse_args_target_user(const char *arg, const char *expected_user)
 int test_parse_args_min_interval(const char *arg, uint64_t expected_seconds)
 {
     const char *argv[] = {arg};
-    char *target_user = NULL;
+    const char *target_user = NULL;
     uint64_t min_seconds_between_logins = 0;
 
     if (parse_args(1, argv, &target_user, &min_seconds_between_logins) != 0)
@@ -87,7 +87,7 @@ int test_parse_args_min_interval(const char *arg, uint64_t expected_seconds)
 int test_parse_args_expect_error(const char *arg)
 {
     const char *argv[] = {arg};
-    char *target_user = NULL;
+    const char *target_user = NULL;
     uint64_t min_seconds_between_logins = 0;
 
     if (parse_args(1, argv, &target_user, &min_seconds_between_logins) == 0)

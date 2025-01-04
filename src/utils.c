@@ -37,7 +37,7 @@ time_t last_login_time(const char *target_user)
     return last_login;
 }
 
-int parse_args(int argc, const char **argv, char **target_user, uint64_t *min_seconds_between_logins)
+int parse_args(int argc, const char **argv, const char **target_user, uint64_t *min_seconds_between_logins)
 {
     for (int i = 0; i < argc; i++)
     {

@@ -39,7 +39,7 @@ int pam_log(pam_handle_t *pamh, const char *message)
 
 PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh, int flags, int argc, const char **argv)
 {
-    char *target_user = NULL;
+    const char *target_user = NULL;
     uint64_t min_seconds_between_logins;
     const char *username = NULL;
 
