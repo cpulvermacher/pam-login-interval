@@ -1,6 +1,7 @@
 #include <time.h>
 #include <string.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 #define PAM_SM_ACCOUNT
 #include <security/pam_modules.h>
@@ -10,27 +11,29 @@
 int pam_log(pam_handle_t *pamh, const char *message)
 {
     struct pam_message msg;
-    struct pam_response *resp;
+    struct pam_response *resp = NULL;
     const struct pam_message *msgp;
     struct pam_conv *conv;
-    int retval;
 
     msg.msg_style = PAM_TEXT_INFO;
     msg.msg = message;
     msgp = &msg;
 
-    retval = pam_get_item(pamh, PAM_CONV, (const void **)&conv);
+    int retval = pam_get_item(pamh, PAM_CONV, (const void **)&conv);
     if (retval != PAM_SUCCESS)
     {
+        free(resp);
         return 1;
     }
 
     retval = conv->conv(1, &msgp, &resp, conv->appdata_ptr);
     if (retval != PAM_SUCCESS)
     {
+        free(resp);
         return 1;
     }
 
+    free(resp);
     return 0;
 }
 
