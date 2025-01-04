@@ -46,7 +46,6 @@ int main(void)
     }
 
     status = pam_sm_acct_mgmt(pamh, flags, argc, argv);
-
     if (status == PAM_SUCCESS)
     {
         printf("Authentication successful\n");

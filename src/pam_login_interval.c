@@ -42,9 +42,6 @@ PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh, int flags, int argc, const c
     char *target_user = NULL;
     uint64_t min_seconds_between_logins;
     const char *username = NULL;
-    time_t now;
-    time_t last_login;
-    uint64_t seconds_since_last_login;
 
     if (parse_args(argc, argv, &target_user, &min_seconds_between_logins) != 0)
     {
@@ -63,16 +60,15 @@ PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh, int flags, int argc, const c
         return PAM_SUCCESS;
     }
 
-    now = time(NULL);
-    last_login = last_login_time(username);
+    time_t now = time(NULL);
+    time_t last_login = last_login_time(username);
     if (last_login == 0)
     {
         // not logged in before, so don't limit login
         return PAM_SUCCESS;
     }
 
-    seconds_since_last_login = difftime(now, last_login);
-
+    uint64_t seconds_since_last_login = difftime(now, last_login);
     if (seconds_since_last_login < min_seconds_between_logins)
     {
         if (!(flags & PAM_SILENT))
