@@ -1,15 +1,19 @@
+#define _XOPEN_SOURCE 700
+
 #include <pwd.h>
+#include <string.h>
 #include <stdio.h>
 #include <unistd.h>
 
 #include <security/pam_appl.h>
 #include <security/pam_modules.h>
 
+char *last_pam_message = NULL;
 static int test_conv(int num_msg, const struct pam_message **msg,
                      struct pam_response **resp, void *appdata_ptr)
 {
     (void)num_msg;
-    (void)msg;
+    last_pam_message = strdup(msg[0]->msg);
     (void)resp;
     (void)appdata_ptr;
 
@@ -49,7 +53,7 @@ int main(void)
     }
     else
     {
-        printf("Authentication denied: %s\n", pam_strerror(pamh, status));
+        printf("Authentication denied: %s. Message: %s\n", pam_strerror(pamh, status), last_pam_message);
     }
     return 0;
 }
