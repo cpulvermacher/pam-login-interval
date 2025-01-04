@@ -1,6 +1,7 @@
 #define _XOPEN_SOURCE 700
 
 #include <pwd.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -22,12 +23,12 @@ static int test_conv(int num_msg, const struct pam_message **msg,
 
 struct pam_conv conv = {test_conv, NULL};
 
-int test_login(int argc, const char **argv, const char *current_user)
+int try_login(int argc, const char **argv, const char *user)
 {
     pam_handle_t *pamh = NULL;
     int flags = 0;
 
-    int status = pam_start("test", current_user, &conv, &pamh);
+    int status = pam_start("test", user, &conv, &pamh);
     if (status != PAM_SUCCESS)
     {
         fprintf(stderr, "Error in pam_start: %s\n", pam_strerror(pamh, status));
@@ -43,8 +44,27 @@ int test_login(int argc, const char **argv, const char *current_user)
     {
         printf("Authentication denied: %s. Message: %s\n", pam_strerror(pamh, status), last_pam_message);
     }
+
+    free(last_pam_message);
+    last_pam_message = NULL;
     pam_end(pamh, status);
     return status;
+}
+
+int test_pam_login_interval(int argc, const char **argv, const char *login_user, int expected_status)
+{
+    int status = try_login(argc, argv, login_user);
+    if (status != expected_status)
+    {
+        printf("Expected status %d, got %d\n", expected_status, status);
+        for (int i = 0; i < argc; i++)
+        {
+            printf(" argv[%d] = %s\n", i, argv[i]);
+        }
+        printf(" Login user: %s\n", login_user);
+        return 1;
+    }
+    return 0;
 }
 
 int main(void)
@@ -56,54 +76,27 @@ int main(void)
         return 1;
     }
 
-    // log in as the current user, with zero interval
-    const char *argv1[] = {"min_interval=0"};
-    if (test_login(1, argv1, pw->pw_name) != PAM_SUCCESS)
-    {
-        printf("%s:%d: Expected PAM_SUCCESS\n", __FILE__, __LINE__);
-        return 1;
-    }
+    int failed = 0;
+    // log in as current user (no target_user set)
+    failed += test_pam_login_interval(1, (const char *[]){"min_interval=0"}, pw->pw_name, PAM_SUCCESS);
+    failed += test_pam_login_interval(1, (const char *[]){"min_interval=36500d"}, pw->pw_name, PAM_AUTH_ERR);
 
-    // log in as the current user, but require last login before 100 years
-    const char *argv2[] = {"min_interval=36500d"};
-    if (test_login(1, argv2, pw->pw_name) != PAM_AUTH_ERR)
-    {
-        printf("%s:%d: Expected PAM_AUTH_ERR\n", __FILE__, __LINE__);
-        return 1;
-    }
+    // log in with user '-' (not a valid user, so should never have logged in before)
+    failed += test_pam_login_interval(1, (const char *[]){"min_interval=36500d"}, "-", PAM_SUCCESS);
 
+    // login in as current user (target_user set)
     char target_user_arg[100];
     snprintf(target_user_arg, sizeof(target_user_arg), "target_user=%s", pw->pw_name);
+    failed += test_pam_login_interval(2, (const char *[]){"min_interval=0", target_user_arg}, pw->pw_name, PAM_SUCCESS);
+    failed += test_pam_login_interval(2, (const char *[]){"min_interval=36500d", target_user_arg}, pw->pw_name, PAM_AUTH_ERR);
 
-    // log in as the current user, with zero interval (target_user set)
-    const char *argv3[] = {target_user_arg, "min_interval=0"};
-    if (test_login(2, argv3, pw->pw_name) != PAM_SUCCESS)
-    {
-        printf("%s:%d: Expected PAM_SUCCESS\n", __FILE__, __LINE__);
-        return 1;
-    }
+    // log in as user A (target_user set to B)
+    failed += test_pam_login_interval(2, (const char *[]){"min_interval=0", "target_user=B"}, "A", PAM_SUCCESS);
+    failed += test_pam_login_interval(2, (const char *[]){"min_interval=36500d", "target_user=B"}, "A", PAM_SUCCESS);
 
-    // log in as the current user, but require last login before 100 years (target_user set)
-    const char *argv4[] = {target_user_arg, "min_interval=36500d"};
-    if (test_login(2, argv4, pw->pw_name) != PAM_AUTH_ERR)
+    if (failed > 0)
     {
-        printf("%s:%d: Expected PAM_AUTH_ERR\n", __FILE__, __LINE__);
-        return 1;
-    }
-
-    // log in as other user, with zero interval (target_user set)
-    const char *argv5[] = {"target_user=A", "min_interval=0"};
-    if (test_login(2, argv5, "B") != PAM_SUCCESS)
-    {
-        printf("%s:%d: Expected PAM_SUCCESS\n", __FILE__, __LINE__);
-        return 1;
-    }
-
-    // log in as other user, but require last login before 100 years (target_user set)
-    const char *argv6[] = {"target_user=A", "min_interval=36500d"};
-    if (test_login(2, argv6, "B") != PAM_SUCCESS)
-    {
-        printf("%s:%d: Expected PAM_SUCCESS\n", __FILE__, __LINE__);
+        printf("%s: %d tests failed\n", __FILE__, failed);
         return 1;
     }
 
