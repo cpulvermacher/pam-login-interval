@@ -38,3 +38,8 @@ The user to limit logins for. For any other users, this module will not interfer
 
 ### `min_interval` (required)
 The minimum duration since the user's last login. This can be a number in seconds, or a duration in the form `1d2h3m4s` or `30m`. If a login is attempted before this time has elapsed, the login will be rejected.
+
+## References
+- The Linux-PAM Module Writers' Guide -  https://fossies.org/linux/Linux-PAM-docs/doc/mwg/Linux-PAM_MWG.pdf
+- pam-google-auth - https://github.com/google/google-authenticator-libpam/blob/master/src/pam_google_authenticator.c
+- How to C (in 2016) - https://matt.sh/howto-c
