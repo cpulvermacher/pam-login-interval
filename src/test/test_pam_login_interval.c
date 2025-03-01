@@ -16,12 +16,12 @@ static int test_conv(int num_msg, const struct pam_message **msg,
                      struct pam_response **resp, void *appdata_ptr)
 {
     (void)num_msg;
+    (void)resp;
+    (void)appdata_ptr;
     if (num_msg > 0)
     {
         last_pam_message = strdup(msg[0]->msg);
     }
-    (void)resp;
-    (void)appdata_ptr;
 
     return PAM_CONV_ERR;
 }
