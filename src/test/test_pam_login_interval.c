@@ -2,6 +2,7 @@
 
 #include <pwd.h>
 #include <stdlib.h>
+#include <dlfcn.h>
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -10,6 +11,10 @@
 #include <security/pam_modules.h>
 
 #include "../utils.h"
+
+typedef int (*pam_sm_acct_mgmt_t)(pam_handle_t *, int, int, const char **);
+
+pam_sm_acct_mgmt_t g_pam_sm_acct_mgmt = NULL;
 
 char *last_pam_message = NULL;
 static int test_conv(int num_msg, const struct pam_message **msg,
@@ -40,7 +45,7 @@ int try_login(int argc, const char **argv, const char *user)
         return 1;
     }
 
-    status = pam_sm_acct_mgmt(pamh, flags, argc, argv);
+    status = g_pam_sm_acct_mgmt(pamh, flags, argc, argv);
     if (status == PAM_SUCCESS)
     {
         printf("Authentication successful\n");
@@ -74,6 +79,21 @@ int test_pam_login_interval(int argc, const char **argv, const char *login_user,
 
 int main(void)
 {
+    void *handle = dlopen("./pam_login_interval.so", RTLD_NOW);
+    if (!handle)
+    {
+        fprintf(stderr, "dlopen failed: %s\n", dlerror());
+        return 1;
+    }
+
+    g_pam_sm_acct_mgmt = (pam_sm_acct_mgmt_t)(uintptr_t)dlsym(handle, "pam_sm_acct_mgmt");
+    if (!g_pam_sm_acct_mgmt)
+    {
+        fprintf(stderr, "dlsym failed: %s\n", dlerror());
+        dlclose(handle);
+        return 1;
+    }
+
     struct passwd *pw = getpwuid(getuid()); // Get the current user
     if (pw == NULL)
     {
