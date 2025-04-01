@@ -4,7 +4,7 @@ PAM_CFLAGS = $(shell pkg-config --cflags pam || echo "-I/usr/include/security")
 CFLAGS0 = -std=c11 -O2 -Wall -Wextra -Wpedantic
 #CFLAGS1 = -Wformat -Wformat=2 -Wconversion -Wimplicit-fallthrough
 #CFLAGS2 = -Werror=format-security
-#CFLAGS3 = -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3
+CFLAGS3 = -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3
 # needs GCC 13+
 #CFLAGS4 = -fstrict-flex-arrays=3
 CFLAGS5 = -fstack-clash-protection -fstack-protector-strong
