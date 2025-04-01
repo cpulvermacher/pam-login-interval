@@ -231,7 +231,6 @@ int main(void)
     failed += test_print_duration(60 * 60 * 24, "1 days");
     failed += test_print_duration(60 * 60 * 24 * 500 + 1000, "500 days");
     failed += test_print_duration(UINT64_MAX, "213503982334601 day"); // longer than buffer, but should not overflow
-    failed += test_print_duration(-1, "213503982334601 day");         // longer than buffer, but should not overflow
     failed += test_print_duration_returns_length_ignoring_limit();
     failed += test_print_duration_returns_length_ignoring_limit_null_buffer();
 

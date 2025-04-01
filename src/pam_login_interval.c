@@ -68,13 +68,14 @@ PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh, int flags, int argc, const c
         return PAM_SUCCESS;
     }
 
-    uint64_t seconds_since_last_login = difftime(now, last_login);
+    double seconds_since_last_login = difftime(now, last_login);
     if (seconds_since_last_login < min_seconds_between_logins)
     {
-        if (!(flags & PAM_SILENT))
+        if (!((unsigned int)flags & PAM_SILENT))
         {
             char message[100];
-            print_login_denied_msg(message, sizeof(message), min_seconds_between_logins - seconds_since_last_login);
+            uint64_t seconds_remaining = min_seconds_between_logins - (uint64_t)seconds_since_last_login;
+            print_login_denied_msg(message, sizeof(message), seconds_remaining);
             pam_log(pamh, message);
         }
         return PAM_AUTH_ERR;

@@ -86,7 +86,7 @@ int parse_duration(const char *duration, uint64_t *seconds)
         }
         else if (*duration >= '0' && *duration <= '9')
         {
-            number = number * 10 + (*duration - '0');
+            number = number * 10 + (uint16_t)(*duration - '0');
         }
         else
         {
