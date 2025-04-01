@@ -5,17 +5,16 @@ CFLAGS0 = -std=c11 -O2 -Wall -Wextra -Wpedantic
 #CFLAGS1 = -Wformat -Wformat=2 -Wconversion -Wimplicit-fallthrough
 #CFLAGS2 = -Werror=format-security
 #CFLAGS3 = -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3
-#CFLAGS4 = -D_GLIBCXX_ASSERTIONS
 # needs GCC 13+
-#CFLAGS5 = -fstrict-flex-arrays=3
-CFLAGS6 = -fstack-clash-protection -fstack-protector-strong
-# prevents dlopen()
-# CFLAGS7 = -Wl,-z,nodlopen -Wl,-z,noexecstack
-#CFLAGS8 = -Wl,-z,relro -Wl,-z,now
-#CFLAGS9 = -Wl,--as-needed -Wl,--no-copy-dt-needed-entries
+#CFLAGS4 = -fstrict-flex-arrays=3
+CFLAGS5 = -fstack-clash-protection -fstack-protector-strong
+# prevents dlopen(): -z,nodlopen -Wl
+CFLAGS6 = -Wl,-z,noexecstack
+#CFLAGS7 = -Wl,-z,relro -Wl,-z,now
+#CFLAGS8 = -Wl,--as-needed -Wl,--no-copy-dt-needed-entries
 # for production
-CFLAGS10 = -fno-delete-null-pointer-checks -fno-strict-overflow -fno-strict-aliasing -ftrivial-auto-var-init=zero
-CFLAGS = ${CFLAGS0} ${CFLAGS1} ${CFLAGS2} ${CFLAGS3} ${CFLAGS4} ${CFLAGS5} ${CFLAGS6} ${CFLAGS7} ${CFLAGS8} ${CFLAGS9} ${CFLAGS10} ${PAM_CFLAGS}
+CFLAGS9 = -fno-delete-null-pointer-checks -fno-strict-overflow -fno-strict-aliasing -ftrivial-auto-var-init=zero
+CFLAGS = ${CFLAGS0} ${CFLAGS1} ${CFLAGS2} ${CFLAGS3} ${CFLAGS4} ${CFLAGS5} ${CFLAGS6} ${CFLAGS7} ${CFLAGS8} ${CFLAGS9} ${PAM_CFLAGS}
 SOFLAGS = -fPIC -shared
 
 LIBS = $(shell pkg-config --libs pam || echo "-lpam")
