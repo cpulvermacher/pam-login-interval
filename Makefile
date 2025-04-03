@@ -11,7 +11,7 @@ CFLAGS5 = -fstack-clash-protection -fstack-protector-strong
 # prevents dlopen(): -z,nodlopen -Wl
 CFLAGS6 = -Wl,-z,noexecstack
 CFLAGS7 = -Wl,-z,relro -Wl,-z,now
-#CFLAGS8 = -Wl,--as-needed -Wl,--no-copy-dt-needed-entries
+CFLAGS8 = -Wl,--as-needed -Wl,--no-copy-dt-needed-entries
 # for production
 CFLAGS9 = -fno-delete-null-pointer-checks -fno-strict-overflow -fno-strict-aliasing -ftrivial-auto-var-init=zero
 CFLAGS = ${CFLAGS0} ${CFLAGS1} ${CFLAGS2} ${CFLAGS3} ${CFLAGS4} ${CFLAGS5} ${CFLAGS6} ${CFLAGS7} ${CFLAGS8} ${CFLAGS9} ${PAM_CFLAGS}
