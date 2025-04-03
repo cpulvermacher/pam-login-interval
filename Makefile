@@ -10,7 +10,7 @@ CFLAGS3 = -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3
 CFLAGS5 = -fstack-clash-protection -fstack-protector-strong
 # prevents dlopen(): -z,nodlopen -Wl
 CFLAGS6 = -Wl,-z,noexecstack
-#CFLAGS7 = -Wl,-z,relro -Wl,-z,now
+CFLAGS7 = -Wl,-z,relro -Wl,-z,now
 #CFLAGS8 = -Wl,--as-needed -Wl,--no-copy-dt-needed-entries
 # for production
 CFLAGS9 = -fno-delete-null-pointer-checks -fno-strict-overflow -fno-strict-aliasing -ftrivial-auto-var-init=zero
