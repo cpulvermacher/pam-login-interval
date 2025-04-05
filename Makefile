@@ -53,4 +53,4 @@ $(BUILDDIR)/test_utils: src/test/test_utils.c $(BUILDDIR)/utils.o
 	$(CC) $(CFLAGS) -o $@ src/test/test_utils.c $(LIBS) $(OBJS)
 
 $(BUILDDIR)/test_pam_login_interval: src/test/test_pam_login_interval.c | $(BUILDDIR)
-	$(CC) $(CFLAGS) -o $@ src/test/test_pam_login_interval.c $(LIBS) $(OBJS)
+	$(CC) $(CFLAGS) -o $@ src/test/test_pam_login_interval.c $(LIBS) -ldl $(OBJS)
