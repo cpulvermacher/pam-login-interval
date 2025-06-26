@@ -35,6 +35,7 @@ You should specify the following parameters in the PAM configuration:
 
 ### `target_user`
 The user to limit logins for. For any other users, this module will not interfere with logins. If not specified, the `min_interval` setting will be applied to all users!
+Only a single user name can be specified. To limit multiple users (but not everyone), add the pam_log_interval.so module to your config file multiple times.
 
 ### `min_interval` (required)
 The minimum duration since the user's last login. This can be a number in seconds, or a duration in the form `1d2h3m4s` or `30m`. If a login is attempted before this time has elapsed, the login will be rejected.
