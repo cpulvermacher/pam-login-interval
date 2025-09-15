@@ -1,4 +1,6 @@
 name: CI
+permissions:
+  contents: read
 
 on: [push, pull_request]
 
@@ -11,7 +13,7 @@ jobs:
         os: [ubuntu-24.04, ubuntu-22.04]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -y libpam0g-dev
 
