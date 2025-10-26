@@ -31,10 +31,7 @@ time_t last_login_time_lastlog2(const char *target_user)
     rc = sqlite3_open_v2(LASTLOG2_DB_PATH, &db, SQLITE_OPEN_READONLY, NULL);
     if (rc != SQLITE_OK)
     {
-        if (db)
-        {
-            sqlite3_close(db);
-        }
+        sqlite3_close(db);
         return -1;
     }
 
