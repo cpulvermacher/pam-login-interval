@@ -7,10 +7,77 @@
 #include <stdlib.h>
 #include <paths.h>
 #include <inttypes.h>
+#include <sqlite3.h>
+#include <unistd.h>
 
 #include "utils.h"
 
-time_t last_login_time(const char *target_user)
+#define LASTLOG2_DB_PATH "/var/lib/lastlog/lastlog2.db"
+
+time_t last_login_time_lastlog2(const char *target_user)
+{
+    sqlite3 *db = NULL;
+    sqlite3_stmt *stmt = NULL;
+    time_t last_login = -1;
+    int rc;
+
+    // Check if database file exists
+    if (access(LASTLOG2_DB_PATH, R_OK) != 0)
+    {
+        return -1; // Database not accessible
+    }
+
+    // Open database in read-only mode
+    rc = sqlite3_open_v2(LASTLOG2_DB_PATH, &db, SQLITE_OPEN_READONLY, NULL);
+    if (rc != SQLITE_OK)
+    {
+        if (db)
+        {
+            sqlite3_close(db);
+        }
+        return -1;
+    }
+
+    // Query for the user's last login time
+    const char *sql = "SELECT Time FROM Lastlog2 WHERE Name = ? ORDER BY Time DESC LIMIT 1;";
+    rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+    if (rc != SQLITE_OK)
+    {
+        sqlite3_close(db);
+        return -1;
+    }
+
+    rc = sqlite3_bind_text(stmt, 1, target_user, -1, SQLITE_STATIC);
+    if (rc != SQLITE_OK)
+    {
+        sqlite3_finalize(stmt);
+        sqlite3_close(db);
+        return -1;
+    }
+
+    rc = sqlite3_step(stmt);
+    if (rc == SQLITE_ROW)
+    {
+        last_login = (time_t)sqlite3_column_int64(stmt, 0);
+    }
+    else if (rc == SQLITE_DONE)
+    {
+        // No record found for this user
+        last_login = 0;
+    }
+    else
+    {
+        // Error occurred
+        last_login = -1;
+    }
+
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+
+    return last_login;
+}
+
+time_t last_login_time_wtmp(const char *target_user)
 {
     struct utmpx *ut;
     char user[__UT_NAMESIZE + 1];
@@ -35,6 +102,19 @@ time_t last_login_time(const char *target_user)
     endutxent(); // close the wtmp file
 
     return last_login;
+}
+
+time_t last_login_time(const char *target_user)
+{
+    time_t result = last_login_time_lastlog2(target_user);
+
+    // If lastlog2 database is not available (returns -1), fall back to wtmp
+    if (result == -1)
+    {
+        result = last_login_time_wtmp(target_user);
+    }
+
+    return result;
 }
 
 int parse_args(int argc, const char **argv, const char **target_user, uint64_t *min_seconds_between_logins)
