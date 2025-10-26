@@ -1,5 +1,6 @@
 CC = gcc
 PAM_CFLAGS = $(shell pkg-config --cflags pam || echo "-I/usr/include/security")
+SQLITE_CFLAGS = $(shell pkg-config --cflags sqlite3)
 # via https://best.openssf.org/Compiler-Hardening-Guides/Compiler-Options-Hardening-Guide-for-C-and-C++.html
 CFLAGS0 = -std=c11 -O2 -Wall -Wextra -Wpedantic
 CFLAGS1 = -Wformat -Wformat=2 -Wconversion -Wimplicit-fallthrough
@@ -16,10 +17,11 @@ CFLAGS8 = -Wl,--as-needed -Wl,--no-copy-dt-needed-entries
 CFLAGS9 = -fno-delete-null-pointer-checks -fno-strict-overflow -fno-strict-aliasing
 # needs GCC 12+
 #-ftrivial-auto-var-init=zero
-CFLAGS = ${CFLAGS0} ${CFLAGS1} ${CFLAGS2} ${CFLAGS3} ${CFLAGS4} ${CFLAGS5} ${CFLAGS6} ${CFLAGS7} ${CFLAGS8} ${CFLAGS9} ${PAM_CFLAGS}
+CFLAGS = ${CFLAGS0} ${CFLAGS1} ${CFLAGS2} ${CFLAGS3} ${CFLAGS4} ${CFLAGS5} ${CFLAGS6} ${CFLAGS7} ${CFLAGS8} ${CFLAGS9} ${PAM_CFLAGS} ${SQLITE_CFLAGS}
 SOFLAGS = -fPIC -shared
 
 LIBS = $(shell pkg-config --libs pam || echo "-lpam")
+SQLITE_LIBS = $(shell pkg-config --libs sqlite3 || echo "-lsqlite3")
 BUILDDIR = build
 INSTALLDIR = /lib/security/
 OBJS = $(BUILDDIR)/utils.o
@@ -44,13 +46,13 @@ $(BUILDDIR):
 	mkdir -p $(BUILDDIR)
 
 pam_login_interval.so: src/pam_login_interval.c $(BUILDDIR)/utils.o
-	$(CC) $(CFLAGS) ${SOFLAGS} -o $@ src/pam_login_interval.c $(LIBS) $(OBJS)
+	$(CC) $(CFLAGS) ${SOFLAGS} -o $@ src/pam_login_interval.c $(OBJS) $(LIBS) $(SQLITE_LIBS)
 
 $(BUILDDIR)/utils.o: src/utils.c src/utils.h | $(BUILDDIR)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(BUILDDIR)/test_utils: src/test/test_utils.c $(BUILDDIR)/utils.o
-	$(CC) $(CFLAGS) -o $@ src/test/test_utils.c $(LIBS) $(OBJS)
+	$(CC) $(CFLAGS) -o $@ src/test/test_utils.c $(OBJS) $(LIBS) $(SQLITE_LIBS)
 
 $(BUILDDIR)/test_pam_login_interval: src/test/test_pam_login_interval.c | $(BUILDDIR)
-	$(CC) $(CFLAGS) -o $@ src/test/test_pam_login_interval.c $(LIBS) -ldl $(OBJS)
+	$(CC) $(CFLAGS) -o $@ src/test/test_pam_login_interval.c $(OBJS) $(LIBS) $(SQLITE_LIBS) -ldl

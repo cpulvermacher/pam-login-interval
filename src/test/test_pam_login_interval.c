@@ -101,6 +101,11 @@ int main(void)
         return 1;
     }
     time_t last_login = last_login_time(pw->pw_name);
+    if (last_login == -1)
+    {
+        printf("Error retrieving last login time for user %s!\n", pw->pw_name);
+        return 1;
+    }
 
     int failed = 0;
     // log in as current user (no target_user set)

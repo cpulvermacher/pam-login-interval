@@ -62,9 +62,9 @@ PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh, int flags, int argc, const c
 
     time_t now = time(NULL);
     time_t last_login = last_login_time(username);
-    if (last_login == 0)
+    if (last_login <= 0)
     {
-        // not logged in before, so don't limit login
+        // DB error or not logged in before, so don't limit login
         return PAM_SUCCESS;
     }
 

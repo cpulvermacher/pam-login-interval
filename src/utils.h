@@ -4,10 +4,27 @@
 #include <stdint.h>
 
 /**
- * Retrieves the last login time for the specified user.
+ * Retrieves the last login time for the specified user from lastlog2 database.
  *
  * @param target_user The username for which to retrieve the last login time.
- * @return The latest login time, or -1 on error.
+ * @return The latest login time, 0 if user never logged in, or -1 on error.
+ */
+time_t last_login_time_lastlog2(const char *target_user);
+
+/**
+ * Retrieves the last login time for the specified user from wtmp.
+ *
+ * @param target_user The username for which to retrieve the last login time.
+ * @return The latest login time, 0 if user never logged in, or -1 on error.
+ */
+time_t last_login_time_wtmp(const char *target_user);
+
+/**
+ * Retrieves the last login time for the specified user.
+ * Tries lastlog2 first, falls back to wtmp if no data found.
+ *
+ * @param target_user The username for which to retrieve the last login time.
+ * @return The latest login time, 0 if user never logged in, or -1 on error.
  */
 time_t last_login_time(const char *target_user);
 

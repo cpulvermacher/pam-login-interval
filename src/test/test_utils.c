@@ -19,7 +19,12 @@ int test_last_login_time(void)
     }
 
     last_login = last_login_time(pw->pw_name);
-    if (last_login == 0)
+    if (last_login == -1)
+    {
+        printf("Error retrieving last login time for user %s!\n", pw->pw_name);
+        return 1;
+    }
+    else if (last_login == 0)
     {
         printf("No previous login found for user %s\n", pw->pw_name);
     }
