@@ -50,11 +50,11 @@ The minimum duration since the user's last login. This can be a number in second
 
 This module automatically detects and uses the appropriate login tracking mechanism:
 
-1. **lastlog2** (preferred): If `/var/lib/lastlog/lastlog2.db` exists, the module reads from this Y2038-safe SQLite database. This is the modern replacement for the legacy lastlog format, used by `pam_lastlog2.so`.
+1. **lastlog2** (preferred): If `/var/lib/lastlog/lastlog2.db` exists, the module reads from this SQLite database updated by `pam_lastlog2.so`.
 
 2. **wtmp** (fallback): If lastlog2 is not available, the module falls back to reading from the traditional wtmp file (`/var/log/wtmp`).
 
-Note: `pam_lastlog2.so` only updates the lastlog2 database, not wtmp. If your distribution does not set it up for you, may need to install e.g. `libpam-lastlog2` and configure it in `/etc/pam.d/common-session`:
+Note: If your distribution does not come with lastlog2 configured, you may need to install e.g. `libpam-lastlog2` and configure it in `/etc/pam.d/common-session` via:
 
 ```
 session optional pam_lastlog2.so
