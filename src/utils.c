@@ -24,7 +24,7 @@ time_t last_login_time_lastlog2(const char *target_user)
     // Check if database file exists
     if (access(LASTLOG2_DB_PATH, R_OK) != 0)
     {
-        return -1; // Database not accessible
+        return -1;
     }
 
     // Open database in read-only mode
@@ -105,8 +105,7 @@ time_t last_login_time(const char *target_user)
 {
     time_t result = last_login_time_lastlog2(target_user);
 
-    // If lastlog2 database is not available (returns -1), fall back to wtmp
-    if (result == -1)
+    if (result <= 0)
     {
         result = last_login_time_wtmp(target_user);
     }
