@@ -46,7 +46,7 @@ $(BUILDDIR):
 	mkdir -p $(BUILDDIR)
 
 pam_login_interval.so: src/pam_login_interval.c $(BUILDDIR)/utils.o
-	$(CC) $(CFLAGS) ${SOFLAGS} -o $@ src/pam_login_interval.c $(LIBS) $(SQLITE_LIBS) $(OBJS)
+	$(CC) $(CFLAGS) ${SOFLAGS} -o $@ src/pam_login_interval.c $(OBJS) $(LIBS) $(SQLITE_LIBS)
 
 $(BUILDDIR)/utils.o: src/utils.c src/utils.h | $(BUILDDIR)
 	$(CC) $(CFLAGS) -c -o $@ $<
