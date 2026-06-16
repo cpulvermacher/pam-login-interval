@@ -115,6 +115,9 @@ int main(void)
         failed += test_pam_login_interval(1, (const char *[]){"min_interval=36500d"}, pw->pw_name, PAM_AUTH_ERR);
     }
 
+    // no min_interval given: should fail open (allow login) even for a user with a previous login
+    failed += test_pam_login_interval(0, (const char *[]){NULL}, pw->pw_name, PAM_SUCCESS);
+
     // log in with user '-' (not a valid user, so should never have logged in before)
     failed += test_pam_login_interval(1, (const char *[]){"min_interval=36500d"}, "-", PAM_SUCCESS);
 
