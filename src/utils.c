@@ -98,6 +98,9 @@ time_t last_login_time_wtmp(const char *target_user)
     }
     endutxent(); // close the wtmp file
 
+    // restore the default utmp file (process-global state!)
+    utmpname(_PATH_UTMP);
+
     return last_login;
 }
 
