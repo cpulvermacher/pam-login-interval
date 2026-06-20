@@ -1,7 +1,5 @@
 # pam-login-interval
 
-[![Status](https://flat.badgen.net/github/checks/cpulvermacher/pam-login-interval)](https://github.com/cpulvermacher/pam-login-interval/actions/workflows/ci.yml)
-
 A PAM module that enforces a minimum time between logins.
 
 ## Prerequisites
